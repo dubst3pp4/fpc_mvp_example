@@ -16,9 +16,9 @@ type
     FView : IView;
     { stores the model }
     FCalculatorModel : ICalculatorModel;
-    { sets the view }
+    { sets the view which implementes the IView interface }
     procedure SetView( AView : IView );
-    { sets the model }
+    { sets the model which implements the ICalculatorModel }
     procedure SetModel( AModel : ICalculatorModel );
   public
     { procedure that is called when the ISO date changed in model }
@@ -27,7 +27,9 @@ type
     procedure OnModelUnixDateChange( Sender : TObject );
     { procedure that is called when the calculate button is clicked in view }
     procedure OnViewCalculateClick( Sender : TObject );
+    { View property }
     property View  : IView            read FView            write SetView;
+    { Model property }
     property Model : ICalculatorModel read FCalculatorModel write SetModel;
   end;
 
@@ -39,6 +41,7 @@ begin
   if not (Sender is ICalculatorModel) then
     raise Exception.Create('Sender is not of type ICalculatorModel');
   FView.SetISODate( (Sender as ICalculatorModel).GetISODate );
+  FView.SetUnixDate( (Sender as ICalculatorModel).GetUnixDate );
 end;
 
 procedure TPresenter.OnModelUnixDateChange( Sender: TObject );
@@ -47,6 +50,7 @@ begin
   if not (Sender is ICalculatorModel) then
     raise Exception.Create('Sender is not of type ICalculatorModel');
   FView.SetUnixDate( (Sender as ICalculatorModel).GetUnixDate );
+  FView.SetISODate( (Sender as ICalculatorModel).GetISODate );
 end;
 
 procedure TPresenter.OnViewCalculateClick( Sender : TObject );

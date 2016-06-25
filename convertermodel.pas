@@ -10,15 +10,22 @@ uses
 
 type
 
-  { TConverter }
-
+  { TConverter, a class to convert ISO dates into Unix timestamps }
   TConverter = class(TInterfacedObject, ICalculatorModel)
   protected
+    { the ISO Date, for example '2016-09-08' }
     FISODate           : string;
+    { the Unix date in seconds }
     FUnixDate          : integer;
+    { field for a method which gets triggered when the ISO date
+      changes }
     FOnISODateChanged  : TNotifyEvent;
+    { field for a method which gets triggered when the Unix date
+      changes }
     FOnUnixDateChanged : TNotifyEvent;
+    { helper to test if ISO date string is valid }
     class function IsISODateString    ( Date : string)  : boolean;
+    { helper which converts ISO date string to TDateTime object }
     class function ISOStringToDateTime( Date : string ) : TDateTime;
   public
     procedure SetISODate ( Date : string);
@@ -107,6 +114,7 @@ begin
   try
     WriteLn('TConverter.SetUnixDate ', Date);
     NativeDate := UnixToDateTime(Date);
+    WriteLn(FormatDateTime('YYYY-MM-DD', NativeDate));
     FUnixDate  := Date;
     NewISODate := FormatDateTime('YYYY-MM-DD', NativeDate);
 
@@ -114,7 +122,7 @@ begin
       FOnUnixDateChanged(self)
     else
       WriteLn('FOnUnixDateChanged is not assigned.');
-
+    WriteLn('----> set iso date');
     SetISODate(NewISODate);
   except
     Writeln('Error');
